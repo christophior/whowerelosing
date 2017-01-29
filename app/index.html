@@ -3,10 +3,30 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Who We're Losing</title>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<style>
+		* {
+			margin: 0;
+		}
+		html, body {
+			height: 100%;
+		}
+		#app {
+			min-height: 100%;
+			height: auto !important;
+			height: 100%;
+			margin: 0 auto -60px; /* the bottom margin is the negative value of the footer's height */
+		}
+		.footer, .push {
+			height: 40px; /* .push must be the same height as .footer */
+		}
+	</style>	
 </head>
 
 <body>
 	<div id="app"></div>
+	<div className="footer">
+		<center><a href="http://www.twitter.com/christophior" style="padding: 25px 0;">@christophior</a></center>
+	</div>
 </body>
 </html>

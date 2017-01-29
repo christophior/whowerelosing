@@ -6,7 +6,7 @@ const Main = React.createClass({
 	render () {
 		return (
 			<div className='main-container'>
-				<Navbar inverse collapseOnSelect>
+				<Navbar inverse collapseOnSelect style={{borderRadius: '0'}}>
 					<Navbar.Header>
 					<Navbar.Brand>
 						<a href="#">Who We're Losing</a>
@@ -20,6 +20,7 @@ const Main = React.createClass({
 					</Navbar.Collapse>
 				</Navbar>
 				{this.props.children}
+				<div class="push"></div>
 			</div>
 		)
 	}
