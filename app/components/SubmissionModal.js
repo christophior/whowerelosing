@@ -3,14 +3,6 @@ import { Button, Modal, Form, FormGroup, FormControl, ControlLabel, Checkbox, Co
 import nationalities from '../data/nationalities.json'
 import occupations from '../data/occupations.json'
 
-function renderNationality (nationality, i) {
-    return <option key={i} value={i}>{nationality.label}</option>
-}
-
-function renderOccupation (occupation, i) {
-    return <option key={i} value={i}>{occupation}</option>
-}
-
 function renderAlertMessage (props) {
     if (props.successMessage !== '') {
         return (<Alert bsStyle="success">
@@ -37,17 +29,25 @@ function renderNameSection (props) {
     );
 }
 
+function renderOccupationOption (occupation, i) {
+    return <option key={i} value={i}>{occupation}</option>
+}
+
 function renderOccupationSection (props) {
     return (
         <FormGroup controlId="formHorizontalOccupation">
             <Col componentClass={ControlLabel} sm={2}>Occupation</Col>
             <Col sm={10}>
                 <select className="form-control" name="occupation" onChange={props.handleOccupationUpdate}>
-                    {occupations.map(renderOccupation)}
+                    {occupations.map(renderOccupationOption)}
                 </select>
             </Col>
         </FormGroup>
     );
+}
+
+function renderNationalityOption (nationality, i) {
+    return <option key={i} value={i}>{nationality.label}</option>
 }
 
 function renderNationalitySection (props) {
@@ -56,7 +56,7 @@ function renderNationalitySection (props) {
             <Col componentClass={ControlLabel} sm={2}>Nationality</Col>
             <Col sm={10}>
                 <select className="form-control" name="nationality" onChange={props.handleNationalityUpdate}>
-                    {nationalities.map(renderNationality)}
+                    {nationalities.map(renderNationalityOption)}
                 </select>
             </Col>
         </FormGroup>

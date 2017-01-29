@@ -71,29 +71,59 @@ const SubmitStory = React.createClass({
         } else {
             occupation = occupations[occupation];
             nationality = nationalities[nationality].label;
+
             console.log(`name: ${name}`);
             console.log(`occupation: ${occupation}`);
             console.log(`nationality: ${nationality}`);
             console.log(`age: ${age}`);
             console.log(`story: ${story}`);
 
-            let experiencesRef = firebase.database().ref().child('experiences');
-            let experienceKey = experiencesRef.push().key;
             let data = {
                 name, occupation, nationality, age, story
             };
-
-            let updates = {};
-            updates['/' + experienceKey] = data;
-
-            experiencesRef.update(updates, (error) => {
-                if (error) {
-                    this.setState({ errorMessage: 'Error in sharing story' });
-                } else {
-                    this.setState({ successMessage: 'Story successfully shared' });
-                }
-            });
+            this.submitStoryToFirebase(data);
+            this.incrementOccupationInFirebase(data);
+            this.incrementNationalityInFirebase(data);
         }
+    },
+    submitStoryToFirebase (data) {
+        let databaseRef = firebase.database().ref().child('experiences');
+        let experienceKey = databaseRef.push().key;
+
+        let updates = {};
+        updates['/' + experienceKey] = data;
+
+        databaseRef.update(updates, (error) => {
+            if (error) {
+                this.setState({ errorMessage: 'Error in sharing story' });
+            } else {
+                this.setState({ successMessage: 'Story successfully shared' });
+            }
+        });
+    },
+    incrementOccupationInFirebase (data) {
+        let databaseRef = firebase.database().ref().child('occupations').child(data.occupation);
+        databaseRef.transaction((occupation) => {
+            if (occupation) {
+                occupation = occupation + 1;
+            } else {
+                occupation = 1;
+            }
+
+            return occupation;
+        });
+    },
+    incrementNationalityInFirebase (data) {
+        let databaseRef = firebase.database().ref().child('nationalities').child(data.nationality);
+        databaseRef.transaction((nationality) => {
+            if (nationality) {
+                nationality = nationality + 1;
+            } else {
+                nationality = 1;
+            }
+
+            return nationality;
+        });
     },
 	render () {
 		return (
