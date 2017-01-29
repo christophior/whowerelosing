@@ -24,7 +24,18 @@ const SubmitStory = React.createClass({
 		}
 	},
     closeModal () {
-        this.setState({ showModal: false });
+        // reset state
+        this.setState({
+			showModal: false,
+            name: null,
+            isAnonymous: false,
+            occupation: null,
+            nationality: null,
+            age: null,
+            story: null,
+            errorMessage: '',
+            successMessage: ''
+		});
     },
     openModal () {
         this.setState({ showModal: true });
@@ -50,12 +61,39 @@ const SubmitStory = React.createClass({
     onSubmit (e) {
         let { name, isAnonymous, occupation, nationality, age, story } = this.state;
         name = isAnonymous ? 'Anonymous' : name;
-        console.log(`name: ${name}`);
-        console.log(`occupation: ${occupations[occupation]}`);
-        console.log(`nationality: ${nationalities[nationality].label}`);
-        console.log(`age: ${age}`);
-        console.log(`story: ${story}`);
-        this.setState({ successMessage: 'Story successfully shared' });
+
+        if (isNaN(occupation) || occupation <= 0 || occupation >= occupations.length) {
+            this.setState({ errorMessage: 'Invalid occupation' });
+        } else if (isNaN(nationality) || nationality <= 0 || nationality >= nationalities.length) {
+            this.setState({ errorMessage: 'Invalid nationality' });
+        } else if (isNaN(age) || age < 0 || age >= 125) {
+            this.setState({ errorMessage: 'Invalid age' });
+        } else {
+            occupation = occupations[occupation];
+            nationality = nationalities[nationality].label;
+            console.log(`name: ${name}`);
+            console.log(`occupation: ${occupation}`);
+            console.log(`nationality: ${nationality}`);
+            console.log(`age: ${age}`);
+            console.log(`story: ${story}`);
+
+            let experiencesRef = firebase.database().ref().child('experiences');
+            let experienceKey = experiencesRef.push().key;
+            let data = {
+                name, occupation, nationality, age, story
+            };
+
+            let updates = {};
+            updates['/' + experienceKey] = data;
+
+            experiencesRef.update(updates, (error) => {
+                if (error) {
+                    this.setState({ errorMessage: 'Error in sharing story' });
+                } else {
+                    this.setState({ successMessage: 'Story successfully shared' });
+                }
+            });
+        }
     },
 	render () {
 		return (
