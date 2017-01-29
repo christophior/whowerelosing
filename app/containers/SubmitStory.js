@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react'
 import { Link } from 'react-router'
 import * as firebase from 'firebase'
+import moment from 'moment'
+
 import SubmissionModal from '../components/SubmissionModal'
 import { Button } from 'react-bootstrap'
 
@@ -61,6 +63,8 @@ const SubmitStory = React.createClass({
     onSubmit (e) {
         let { name, isAnonymous, occupation, nationality, age, story } = this.state;
         name = isAnonymous ? 'Anonymous' : name;
+        let date = moment().format(),
+            userInfo = {};
 
         if (isNaN(occupation) || occupation <= 0 || occupation >= occupations.length) {
             this.setState({ errorMessage: 'Invalid occupation' });
@@ -72,26 +76,33 @@ const SubmitStory = React.createClass({
             occupation = occupations[occupation];
             nationality = nationalities[nationality].label;
 
-            console.log(`name: ${name}`);
-            console.log(`occupation: ${occupation}`);
-            console.log(`nationality: ${nationality}`);
-            console.log(`age: ${age}`);
-            console.log(`story: ${story}`);
+            if (!isAnonymous) {
+                userInfo = {
+                    pic: firebase.auth().currentUser.photoURL,
+                    id: firebase.auth().currentUser.providerData[0].uid
+                };
+            }
+            // https://twitter.com/intent/user?user_id=${userInfo.id}
 
             let data = {
-                name, occupation, nationality, age, story
+                name, occupation, nationality, age, story, date, userInfo
             };
+
+            console.log(data);
+
             this.submitStoryToFirebase(data);
             this.incrementOccupationInFirebase(data);
             this.incrementNationalityInFirebase(data);
         }
     },
     submitStoryToFirebase (data) {
-        let databaseRef = firebase.database().ref().child('experiences');
-        let experienceKey = databaseRef.push().key;
+        let userId = firebase.auth().currentUser.uid;
+        let databaseRef = firebase.database().ref();
+        let experienceKey = databaseRef.child('experiences').push().key;
 
         let updates = {};
-        updates['/' + experienceKey] = data;
+        updates['experiences/' + experienceKey] = data;
+        updates['users/' + userId + '/' + experienceKey] = data;
 
         databaseRef.update(updates, (error) => {
             if (error) {

@@ -7,7 +7,7 @@ import Home from '../containers/Home'
 
 
 const routes = (
-	<Router history={hashHistory}>
+	<Router history={browserHistory}>
 		<Route path='/' component={Main}>
 			<IndexRoute component={Home} />
 		</Route>

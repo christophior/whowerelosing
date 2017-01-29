@@ -20,7 +20,7 @@ const Main = React.createClass({
 					</Navbar.Collapse>
 				</Navbar>
 				{this.props.children}
-				<div class="push"></div>
+				<div className="push"></div>
 			</div>
 		)
 	}

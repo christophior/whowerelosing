@@ -35,20 +35,33 @@ const Home = React.createClass({
 		let databaseRef = firebase.database().ref().child('occupations');
 		databaseRef.once('value')
 			.then((snapshot) => {
-				// console.log(snapshot.val());
-				this.setState({occupations: snapshot.val()});
+				let rawData = snapshot.val(),
+					processedData = {};
+
+				// so we can just get the top occupations for the chart
+				let sortedKeys = Object.keys(rawData).sort(function(a,b){return rawData[a]-rawData[b]});
+				sortedKeys = sortedKeys.slice(sortedKeys.length-4);
+				sortedKeys.forEach((o) => processedData[o] = rawData[o]);
+				this.setState({occupations: processedData});
 			});
 	},
 	getNationalitiesData () {
 		let databaseRef = firebase.database().ref().child('nationalities');
 		databaseRef.once('value')
 			.then((snapshot) => {
-				// console.log(snapshot.val());
-				this.setState({nationalities: snapshot.val()});
+				let rawData = snapshot.val(),
+					processedData = {};
+
+				// so we can just get the top nationalities for the chart
+				let sortedKeys = Object.keys(rawData).sort(function(a,b){return rawData[a]-rawData[b]});
+				sortedKeys = sortedKeys.slice(sortedKeys.length-4);
+				sortedKeys.forEach((n) => processedData[n] = rawData[n]);
+
+				this.setState({nationalities: processedData});
 			});
 	},
 	getExperiencesData (steps) {
-		let databaseRef = firebase.database().ref().child('experiences').limitToFirst(5);
+		let databaseRef = firebase.database().ref().child('experiences').limitToFirst(10);
 		databaseRef.once('value', (snapshot) => {
 			this.setState({posts: snapshot.val()});
 		});
@@ -67,9 +80,11 @@ const Home = React.createClass({
 		});
 	},
 	generateChartData (data) {
+		// get the names from the data
 		let dataKeys = Object.keys(data),
 			count = [];
 
+		// get the numbers for each name
 		dataKeys.forEach((key) => {
 			count.push(data[key]);
 		});
