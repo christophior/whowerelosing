@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import { Link } from 'react-router'
 import * as firebase from 'firebase'
 
-import SubmitStory from '../containers/SubmitStory'
+import SubmitStory from './SubmitStory'
 
 const wellStyles = {maxWidth: 400, margin: '0 auto 10px'};
 
@@ -19,7 +19,7 @@ const Home = React.createClass({
 					isLoggedIn: (null !== firebaseUser)
 				});
 			}
-			console.log('Are we logged in? ', null !== firebaseUser);
+			// console.log('Are we logged in? ', null !== firebaseUser);
 		});
 	},
 	render () {
