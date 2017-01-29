@@ -36,19 +36,12 @@ const Home = React.createClass({
 			console.log(user);
 		});
 	},
-	signInWithFacebook () {
-		var provider = new firebase.auth.FacebookAuthProvider();
-		firebase.auth().signInWithPopup(provider).then((result) => {
-			console.log(result);
-		});
-	},
 	render () {
 		let signInButtons = (
 			<Col smOffset={2} sm={8}>
-				<p>Sign in with Twitter or Facebook to share your story</p>
+				<p>Sign in with Twitter to share your story</p>
 				<ButtonGroup vertical block>
 					<Button bsStyle="primary" bsSize="large" onClick={this.signInWithTwitter} block>Sign In With Twitter</Button>
-					<Button bsStyle="primary" bsSize="large" onClick={this.signInWithFacebook} block>Sign In With Facebook</Button>
 				</ButtonGroup>
 			</Col>
 		);
