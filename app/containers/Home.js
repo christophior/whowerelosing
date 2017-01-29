@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import { Link } from 'react-router'
 import * as firebase from 'firebase'
 import SubmitStory from './SubmitStory'
-import { PageHeader, Button, ButtonGroup, Col } from 'react-bootstrap'
+import { PageHeader, Button, ButtonGroup, Col, Table } from 'react-bootstrap'
 import { Doughnut } from 'react-chartjs-2' 
 import chartColors from '../data/chartColors.json'
 
@@ -14,7 +14,8 @@ const Home = React.createClass({
 		return {
 			isLoggedIn: (null !== firebase.auth().currentUser),
 			occupations: {},
-			nationalities: {}
+			nationalities: {},
+			posts: []
 		}
 	},
 	componentDidMount () {
@@ -26,19 +27,31 @@ const Home = React.createClass({
 			}
 			console.log('Are we logged in? ', firebaseUser.uid);
 		});
-
-		let databaseRef = firebase.database().ref();
-		databaseRef.child('occupations').once('value')
+		this.getOccupationsData();
+		this.getNationalitiesData();
+		this.getExperiencesData(0);
+	},
+	getOccupationsData () {
+		let databaseRef = firebase.database().ref().child('occupations');
+		databaseRef.once('value')
 			.then((snapshot) => {
-				console.log(snapshot.val());
+				// console.log(snapshot.val());
 				this.setState({occupations: snapshot.val()});
 			});
-
-		databaseRef.child('nationalities').once('value')
+	},
+	getNationalitiesData () {
+		let databaseRef = firebase.database().ref().child('nationalities');
+		databaseRef.once('value')
 			.then((snapshot) => {
-				console.log(snapshot.val());
+				// console.log(snapshot.val());
 				this.setState({nationalities: snapshot.val()});
 			});
+	},
+	getExperiencesData (steps) {
+		let databaseRef = firebase.database().ref().child('experiences').limitToFirst(5);
+		databaseRef.once('value', (snapshot) => {
+			this.setState({posts: snapshot.val()});
+		});
 	},
 	signInWithTwitter () {
 		console.log(firebase.auth.TwitterAuthProvider());
@@ -66,6 +79,28 @@ const Home = React.createClass({
 			datasets: [{ data: count, backgroundColor: chartColors, hoverBackgroundColor: chartColors}] 
 		};
 	},
+	renderPostEntries () {
+		let { posts } = this.state;
+		let postKeys = Object.keys(posts);
+		let tableRows = postKeys.map((key, i) => {
+				let data = posts[key];
+				return (
+					<tr key={i}>
+						<td>{data.name}</td>
+						<td>{data.occupation}</td>
+						<td>{data.nationality}</td>
+						<td>{data.age}</td>
+						<td>{data.story}</td>
+					</tr>
+				);
+			});
+		return (
+			<tbody>
+				{tableRows}
+			</tbody>
+
+		);
+	},
 	render () {
 		let { occupations, nationalities } = this.state; 
 
@@ -82,19 +117,37 @@ const Home = React.createClass({
 		);
 
 		let buttonsShown = this.state.isLoggedIn ? <SubmitStory /> : signInButtons;
+
 		return (
 			<div className='col-sm-12 text-center'>
 				<PageHeader>A view of who we're losing <small>because of the Executive Order signed by president Trump</small></PageHeader>
+				
 				<Col sm={6}>
 					<Doughnut data={occupationData} />
 				</Col>
+
 				<Col sm={6}>
 					<Doughnut data={nationalityData} />
 				</Col>
-				<hr />
-				<div className='col-sm-12 text-center' style={{paddingTop: '25px'}}>
+
+				<div className='col-sm-12 text-center' style={{padding: '25px 0'}}>
 					{buttonsShown}
 				</div>
+
+				<Col smOffset={2} sm={8}>
+					<Table striped bordered condensed hover>
+						<thead>
+							<tr>
+								<th>Name</th>
+								<th>Occupation</th>
+								<th>Nationality</th>
+								<th>Age</th>
+								<th>Story</th>
+							</tr>
+						</thead>
+						{this.renderPostEntries()}
+					</Table>
+				</Col>
 			</div>
 		);
 	}
