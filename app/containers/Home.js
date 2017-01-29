@@ -25,7 +25,7 @@ const Home = React.createClass({
 					isLoggedIn: (null !== firebaseUser)
 				});
 			}
-			console.log('Are we logged in? ', firebaseUser.uid);
+			// console.log('Are we logged in? ', firebaseUser.uid);
 		});
 		this.getOccupationsData();
 		this.getNationalitiesData();
