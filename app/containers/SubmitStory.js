@@ -105,24 +105,18 @@ const SubmitStory = React.createClass({
         let databaseRef = firebase.database().ref().child('occupations').child(data.occupation);
         databaseRef.transaction((occupation) => {
             if (occupation) {
-                occupation = occupation + 1;
-            } else {
-                occupation = 1;
+                return occupation + 1;
             }
-
-            return occupation;
+            return 1;
         });
     },
     incrementNationalityInFirebase (data) {
         let databaseRef = firebase.database().ref().child('nationalities').child(data.nationality);
         databaseRef.transaction((nationality) => {
             if (nationality) {
-                nationality = nationality + 1;
-            } else {
-                nationality = 1;
-            }
-
-            return nationality;
+                return nationality + 1;
+            } 
+            return 1;
         });
     },
 	render () {

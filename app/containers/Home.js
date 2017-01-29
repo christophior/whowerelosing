@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import { Link } from 'react-router'
 import * as firebase from 'firebase'
 import SubmitStory from './SubmitStory'
-import { PageHeader } from 'react-bootstrap'
+import { PageHeader, Button, ButtonGroup, Col } from 'react-bootstrap'
 
 
 const wellStyles = {maxWidth: 400, margin: '0 auto 10px'};
@@ -20,14 +20,44 @@ const Home = React.createClass({
 					isLoggedIn: (null !== firebaseUser)
 				});
 			}
-			// console.log('Are we logged in? ', null !== firebaseUser);
+			console.log('Are we logged in? ', firebaseUser.uid);
+		});
+	},
+	signInWithTwitter () {
+		console.log(firebase.auth.TwitterAuthProvider());
+		var provider = new firebase.auth.TwitterAuthProvider();
+
+		firebase.auth().signInWithPopup(provider).then((result) => {
+			  // For accessing the Twitter API.
+			var token = result.credential.accessToken;
+			var secret = result.credential.secret;
+			// The signed-in user info.
+			var user = result.user;
+			console.log(user);
+		});
+	},
+	signInWithFacebook () {
+		var provider = new firebase.auth.FacebookAuthProvider();
+		firebase.auth().signInWithPopup(provider).then((result) => {
+			console.log(result);
 		});
 	},
 	render () {
+		let signInButtons = (
+			<Col smOffset={2} sm={8}>
+				<p>Sign in with Twitter or Facebook to share your story</p>
+				<ButtonGroup vertical block>
+					<Button bsStyle="primary" bsSize="large" onClick={this.signInWithTwitter} block>Sign In With Twitter</Button>
+					<Button bsStyle="primary" bsSize="large" onClick={this.signInWithFacebook} block>Sign In With Facebook</Button>
+				</ButtonGroup>
+			</Col>
+		);
+
+		let buttonsShown = this.state.isLoggedIn ? <SubmitStory /> : signInButtons;
 		return (
 			<div className='col-sm-12 text-center'>
 				<PageHeader>A view of who we're losing <small>because of the Executive Order signed by president Trump</small></PageHeader>
-				<SubmitStory />
+				{buttonsShown}
 			</div>
 		)
 	}
