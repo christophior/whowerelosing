@@ -62,7 +62,7 @@ const Home = React.createClass({
 			});
 	},
 	getExperiencesData (steps) {
-		let databaseRef = firebase.database().ref().child('experiences').limitToFirst(5);
+		let databaseRef = firebase.database().ref().child('experiences').limitToLast(5);
 		databaseRef.once('value', (snapshot) => {
 			this.setState({posts: snapshot.val()});
 		});
