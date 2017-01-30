@@ -105,7 +105,6 @@ const Home = React.createClass({
 						<td>{data.name}</td>
 						<td>{data.occupation}</td>
 						<td>{data.nationality}</td>
-						<td>{data.age}</td>
 						<td>
 							<ReadMore lines={1}>
 								{data.story}
@@ -175,7 +174,6 @@ const Home = React.createClass({
 										<th>name</th>
 										<th>occupation</th>
 										<th>nationality</th>
-										<th>age</th>
 										<th>story</th>
 									</tr>
 								</thead>
