@@ -23,7 +23,7 @@ function renderNameSection (props) {
                 <FormControl type="text" placeholder="Name" onChange={props.handleNameUpdate} disabled={props.isAnonymous} />
             </Col>
             <Col smOffset={2} sm={10}>
-                <Checkbox onChange={props.handleAnonymousUpdate}>Remain Anonymous</Checkbox>
+                <label><input type="checkbox" onChange={props.handleAnonymousUpdate} />Remain Anonymous</label>
             </Col>
         </FormGroup>
     );
@@ -88,18 +88,15 @@ function renderStorySection (props) {
 
 function renderModalButton (props) {
     if (props.successMessage !== '') {
-        return <Button type="button" onClick={props.closeModal}>Done</Button>;
+        return <a type="button" className="button special fit" onClick={props.closeModal}>Done</a>;
     } else {
-        return <Button type="submit" onClick={props.handleSubmit}>Share</Button>;
+        return <a type="submit" className="button special fit" onClick={props.handleSubmit}>Share</a>;
     }
 }
 
 function SubmissionModal (props) {
     return (
         <Modal show={props.showModal} onHide={props.closeModal}>
-            <Modal.Header closeButton>
-                <Modal.Title>Share Your Story</Modal.Title>
-            </Modal.Header>
             <Modal.Body>
                 <Form horizontal>
                     {renderNameSection(props)}

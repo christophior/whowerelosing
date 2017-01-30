@@ -3,7 +3,8 @@ import { Link } from 'react-router'
 import * as firebase from 'firebase'
 import SubmitStory from './SubmitStory'
 import { PageHeader, Button, ButtonGroup, Col, Table } from 'react-bootstrap'
-import { Doughnut } from 'react-chartjs-2' 
+import { Doughnut } from 'react-chartjs-2'
+import ReadMore from './ReadMore'
 import chartColors from '../data/chartColors.json'
 
 
@@ -40,7 +41,7 @@ const Home = React.createClass({
 
 				// so we can just get the top occupations for the chart
 				let sortedKeys = Object.keys(rawData).sort(function(a,b){return rawData[a]-rawData[b]});
-				sortedKeys = sortedKeys.slice(sortedKeys.length-4);
+				// sortedKeys = sortedKeys.slice(sortedKeys.length-4);
 				sortedKeys.forEach((o) => processedData[o] = rawData[o]);
 				this.setState({occupations: processedData});
 			});
@@ -54,14 +55,14 @@ const Home = React.createClass({
 
 				// so we can just get the top nationalities for the chart
 				let sortedKeys = Object.keys(rawData).sort(function(a,b){return rawData[a]-rawData[b]});
-				sortedKeys = sortedKeys.slice(sortedKeys.length-4);
+				// sortedKeys = sortedKeys.slice(sortedKeys.length-4);
 				sortedKeys.forEach((n) => processedData[n] = rawData[n]);
 
 				this.setState({nationalities: processedData});
 			});
 	},
 	getExperiencesData (steps) {
-		let databaseRef = firebase.database().ref().child('experiences').limitToFirst(10);
+		let databaseRef = firebase.database().ref().child('experiences').limitToFirst(5);
 		databaseRef.once('value', (snapshot) => {
 			this.setState({posts: snapshot.val()});
 		});
@@ -105,7 +106,11 @@ const Home = React.createClass({
 						<td>{data.occupation}</td>
 						<td>{data.nationality}</td>
 						<td>{data.age}</td>
-						<td>{data.story}</td>
+						<td>
+							<ReadMore lines={1}>
+								{data.story}
+							</ReadMore>
+						</td>
 					</tr>
 				);
 			});
@@ -123,46 +128,62 @@ const Home = React.createClass({
 			nationalityData = this.generateChartData(nationalities);
 
 		let signInButtons = (
-			<Col smOffset={2} sm={8}>
-				 <div style={wellStyles}>
-					<Button bsStyle="primary" bsSize="large" onClick={this.signInWithTwitter} block>Sign In With Twitter</Button>
-				</div>
+			<li>
+				<a className="button special fit" onClick={this.signInWithTwitter} block>sign in with twitter</a>
 				<p>Sign in with Twitter to share your story</p>
-			</Col>
+			</li>
 		);
 
 		let buttonsShown = this.state.isLoggedIn ? <SubmitStory /> : signInButtons;
 
 		return (
-			<div className='col-sm-12 text-center'>
-				<PageHeader>A view of who we're losing <small>because of the Executive Order signed by president Trump</small></PageHeader>
-				
-				<Col sm={6}>
-					<Doughnut data={occupationData} />
-				</Col>
+			<div>
+				<section className="wrapper style2 split special" style={{padding: "3em 0"}}>
+					<h3>who we're losing at a glance</h3>
+					<div className="inner">
+						<section>
+							<Doughnut data={occupationData} />
+						</section>
+						<section>
+							<Doughnut data={nationalityData} />
+						</section>
+					</div>
+				</section>
 
-				<Col sm={6}>
-					<Doughnut data={nationalityData} />
-				</Col>
+				<section className="wrapper style3 special">
+					<div className="inner">
+						<header>
+							<p>If you, a friend, or loved one were directly affected by the recent Executive Order, please share your story.</p>
+						</header>
+						<footer>
+							<ul className="actions">
+								{buttonsShown}
+							</ul>
+						</footer>
+					</div>
+				</section>
 
-				<div className='col-sm-12 text-center' style={{padding: '25px 0'}}>
-					{buttonsShown}
-				</div>
-
-				<Col smOffset={2} sm={8}>
-					<Table striped bordered condensed hover>
-						<thead>
-							<tr>
-								<th>Name</th>
-								<th>Occupation</th>
-								<th>Nationality</th>
-								<th>Age</th>
-								<th>Story</th>
-							</tr>
-						</thead>
-						{this.renderPostEntries()}
-					</Table>
-				</Col>
+				<section className="wrapper style1 special">
+					<div className="inner">
+						<header>
+							<h2>shared stories</h2>
+						</header>
+						<footer>
+							<table>
+								<thead>
+									<tr>
+										<th>name</th>
+										<th>occupation</th>
+										<th>nationality</th>
+										<th>age</th>
+										<th>story</th>
+									</tr>
+								</thead>
+								{this.renderPostEntries()}
+							</table>
+						</footer>
+					</div>
+				</section>
 			</div>
 		);
 	}

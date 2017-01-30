@@ -132,10 +132,8 @@ const SubmitStory = React.createClass({
     },
 	render () {
 		return (
-            <div className='col-sm-12'>
-                <div style={wellStyles}>
-                    <Button bsStyle="primary" bsSize="large" onClick={this.openModal} block>Submit Your Story</Button>
-                </div>
+            <li>
+                <a className="button special fit" onClick={this.openModal} block>share your story</a>
                 <SubmissionModal
                     handleNameUpdate={this.onNameUpdate}
                     handleAnonymousUpdate={this.onAnonymousUpdate}
@@ -149,7 +147,7 @@ const SubmitStory = React.createClass({
                     errorMessage={this.state.errorMessage}
                     showModal={this.state.showModal}
                     closeModal={this.closeModal} />
-            </div>
+            </li>
 		)
 	}
 });
