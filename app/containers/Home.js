@@ -43,6 +43,11 @@ const Home = React.createClass({
 				let sortedKeys = Object.keys(rawData).sort(function(a,b){return rawData[a]-rawData[b]});
 				// sortedKeys = sortedKeys.slice(sortedKeys.length-4);
 				sortedKeys.forEach((o) => processedData[o] = rawData[o]);
+
+				// remove "not applicable" data
+				if (processedData["Not Applicable"]) {
+					delete processedData["Not Applicable"];
+				}
 				this.setState({occupations: processedData});
 			});
 	},
